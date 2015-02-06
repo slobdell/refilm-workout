@@ -1,0 +1,16 @@
+final.sql
+*.mp4
+*.avi
+*.mov
+*.un~
+.DS_Store
+*.pyc
+*.cpp
+.virtualenv
+staticfiles
+tmp
+*.sqlite3
+workout_generator/scripts/video_scripts/
+emails.json
+email_junk
+ssl_stuff
