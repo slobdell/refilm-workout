@@ -7,224 +7,36 @@
 <!--[if (gte IE 9)|!(IE)]><!--><html class="no-js" lang="en"> <!--<![endif]-->
 <head>
 
-	<!-- Basic Page Needs
-  ================================================== -->
-	<meta charset="utf-8">
-    <title>WorkoutGenerator | Intelligent Workout Construction for Anyone</title>
-	<meta name="description" content="WorkoutGenerator can help to improve your strength, get bigger, get slimmer, or get faster depending on your weight training goals.  Workouts are dynamically generated on a per user basis and taylored based on your own scheduling and training constraints.  Outputs are created from a sophisticated algorithm backed by a huge database of exercises.">
-	<meta name="author" content="">
-
-	<!-- Mobile Specific Metas
-  ================================================== -->
-	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-
 	<!-- CSS
   ================================================== -->
-	<link rel="stylesheet" href="{% static 'css/stylesheets/screen.css' %}">
-	<link rel="stylesheet" href="{% static 'css/stylesheets/fitness_icons.css' %}">
-	<link rel="stylesheet" href="{% static 'css/icon_fonts.css' %}">
-	<link rel="stylesheet" href="{% static 'css/flexslider.css' %}">
-	<link rel="stylesheet" href="{% static 'css/bootstrap-switch.min.css' %}">
-    <link rel="stylesheet" href="{% static 'css/namespaced-bootstrap.css' %}">
-	<link rel="stylesheet" href="{% static 'css/powerange.css' %}">
-	<link rel="stylesheet" href="{% static 'css/datepicker.css' %}">
-
-
-	<!--[if IE ]><link rel="stylesheet" href="{% static 'css/ie.css' %}"><!--<![endif]-->
-
-
-	<!-- Google Fonts
-  ================================================== -->
-	<link rel="stylesheet" href="{% static 'css/google_fonts.css' %}">
-<!-- <link href='//fonts.googleapis.com/css?family=Roboto+Condensed:300italic,400italic,400,300,700' rel='stylesheet' type='text/css'> -->
-
-	<!--[if lt IE 9]>
-        {% comment %}
-            <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
-        {% endcomment %}
-        <script type="text/javascript" src="{% static 'js/ie_html5.js' %}"></script>
-	<![endif]-->
-
-	<!-- Favicons
-	================================================== -->
-    <link rel="shortcut icon" href="{% static 'img/favicon.ico' %}" type="image/x-icon">
-    <link rel="icon" href="{% static 'img/favicon.ico' %}" type="image/x-icon">
-	<link rel="apple-touch-icon" href="{% static 'img/apple-touch-icon.png' %}">
-	<link rel="apple-touch-icon" sizes="72x72" href="{% static 'img/apple-touch-icon-72x72.png' %}">
-	<link rel="apple-touch-icon" sizes="114x114" href="{% static 'img/apple-touch-icon-114x114.png' %}">
-
-<!-- start Mixpanel --><script type="text/javascript">(function(f,b){if(!b.__SV){var a,e,i,g;window.mixpanel=b;b._i=[];b.init=function(a,e,d){function f(b,h){var a=h.split(".");2==a.length&&(b=b[a[0]],h=a[1]);b[h]=function(){b.push([h].concat(Array.prototype.slice.call(arguments,0)))}}var c=b;"undefined"!==typeof d?c=b[d]=[]:d="mixpanel";c.people=c.people||[];c.toString=function(b){var a="mixpanel";"mixpanel"!==d&&(a+="."+d);b||(a+=" (stub)");return a};c.people.toString=function(){return c.toString(1)+".people (stub)"};i="disable track track_pageview track_links track_forms register register_once alias unregister identify name_tag set_config people.set people.set_once people.increment people.append people.track_charge people.clear_charges people.delete_user".split(" ");
-for(g=0;g<i.length;g++)f(c,i[g]);b._i.push([a,e,d])};b.__SV=1.2;a=f.createElement("script");a.type="text/javascript";a.async=!0;a.src="//cdn.mxpnl.com/libs/mixpanel-2-latest.min.js";e=f.getElementsByTagName("script")[0];e.parentNode.insertBefore(a,e)}})(document,window.mixpanel||[]);
-mixpanel.init("{{ mixpanel_token }}");</script><!-- end Mixpanel -->
-
 </head>
 <body>
+    <div>
+    <h1>{{ exercise_name }}</h1>
 
-    {% include "underscore_templates/main_page.html" %}
-    <input type="hidden" id="stripe-publish-key" value="{{ publishable_key }}" />
-    <input type="hidden" id="square-icon" value="{% static 'img/weight_equipment/barbell.jpg' %}"/>
-
-	<!-- Primary Page Layout
-	================================================== -->
-	<div id="wrap">
-
-		<!-- Header/Main Nav
-		================================================== -->
-		<header>
-			<div class="container">
-				<div class="sixteen columns">
-                    <span class="custom-icon snatch"></span>
-                    <span class="custom-icon run"></span>
-                    <span class="custom-icon ball-crunch"></span>
-                    <span class="custom-icon bench-press2"></span>
-
-                    <ul class="nav-bar right">
-                        <li id="login-state"><a href="javascript:void(0);">Log In <i class="icon-signin"></i></a></li>
-                        <li id="pricing-link"><a href="#!pricing">Pricing <i class="icon-money"></i></a></li>
-                        <li id="home-link"><a href="#">Home <i class="icon-home"></i></a></li>
-                    </ul>
-<div id='profile-picture' class="profile-circular" style="float: right; margin-top: 20px; margin-right: 10px; display: none;"></div>
-
-				</div>
-			</div>
-		</header>
-
-        <div class="page-header" style="padding: 10px 0 20px;">
-			<div class="container">
-<div class="sixteen columns">
-<h1 style="display: inline-block; margin-right: 15px;">Workout Generator</h1>
-<span class="sub-title" style="display: inline-block;">The Most Intelligent Fitness App Ever.</span>
-				</div>
-			</div>
-		</div>
-
-		<!-- Main Content
-		================================================== -->
-		<div class="container content-area">
-		</div>
-
-{% comment %}
-    <div class="slogan bottom">
-        <div class="sixteen columns">
-            <h2>Choose us for all your design and development needs.</h2>
-            <h3>We will get you <span class="text-accent">where you want to be</span> on the web!</h3>
-        </div>
+<video id="video_exercise_{{ exercise_id }}" muted autoplay="" loop="" poster="true" width="480" height="360">
+        <source src="https://s3-us-west-1.amazonaws.com/workout-generator-exercises/smaller_mp4/small_{{ video_id }}.mp4" type="video/mp4" class="mp4source">
+        <source src="https://s3-us-west-1.amazonaws.com/workout-generator-exercises/smaller_webm/small_{{ video_id }}.webmsd.webm" type="video/webm" class="webmsource">
+    </video>
     </div>
-{% endcomment %}
+    <form action="." method="POST">
+        <input type="hidden" name="exercise_id" value="{{ exercise_id }}"/>
+        <input type="hidden" name="action" value="discard" />
+        <input type="submit" value="Will Not Film" style="margin: 30px; width: 200px; font-size: 2em;">
+    </form>
 
-		<!-- Footer
-		================================================== -->
-		<footer>
-			<div class="container">
-				<div class="one-third column">
-					<h5>About Us</h5>
-					<p>Workout Generator was built to solve a problem: Make personal training programs accessible at scale to the masses with reasonable prices. The pattern that good trainers use to create workouts can be automated just like anything else, and in doing so those patterns can be finely tuned and optimized in ways that become unmanageable for humans.
-                    </p>
-<br/>
-<p>
-If you're looking for the old version of WorkoutGenerator be sure to visit <a href="http://old.workoutgenerator.net">Old.WorkoutGenerator.net</a>
-</p>
-				</div>
-				<div class="one-third column">
-					<h5>Facebook</h5>
-					<div class="twitter-container">
-<p>
-						<i class="icon-facebook"></i>
- WorkoutGenerator is a subsidiary product of
-<a href="https://www.facebook.com/blackboxtrainer">BlackBox Trainer</a>
-</p>
-						<div class="clearfix"></div>
-					</div>
-				</div>
-				<div class="one-third column">
-					<h5>Contact</h5>
-<p><i class="icon-envelope"></i> <a href="mailto:support@workoutgenerator.net">E-Mail Support</a></p>
-<p><i class="icon-facebook"></i> <a href="https://www.facebook.com/blackboxtrainer">facebook.com/blackboxtrainer</a></p>
-				</div>
-			</div>
-		</footer>
-		<div class="footer-bottom">
-			<div class="container">
-				<div class="eight columns">
-<div class="copy">&copy; {{ year }} BlackBoxTrainer</div>
-				</div>
-				<div class="eight columns">
-					<ul class="social">
-						<li class="tool" title="Facebook"><a href="https://www.facebook.com/blackboxtrainer" class="icon-facebook"></a></li>
-					</ul>
-				</div>
-			</div>
-		</div>
+    <form action="." method="POST">
+        <input type="hidden" name="exercise_id" value="{{ exercise_id }}"/>
+        <input type="hidden" name="action" value="later" />
+        <input type="submit" value="Film Later" style="margin: 30px; width: 200px; font-size: 2em;">
+    </form>
 
-	</div><!-- End Wrap -->
-
+    <form action="." method="POST">
+        <input type="hidden" name="exercise_id" value="{{ exercise_id }}"/>
+        <input type="hidden" name="action" value="filmed" />
+        <input type="submit" value="Exercise Filmed!" style="margin: 30px; width: 200px; font-size: 2em;">
+    </form>
 	<!-- Javascript/jQuery
 	================================================== -->
-	<script type="text/javascript" src="{% static 'js/jquery-1.8.3.min.js' %}"></script>
-	<script type="text/javascript" src="{% static 'js/jquery-ui-1.10.0.custom.min.js' %}"></script>
-
-	<script type="text/javascript" src="{% static 'js/bootstrap-switch.min.js' %}"></script>
-	<script type="text/javascript" src="{% static 'js/powerange.min.js' %}"></script>
-
-    <script src="{% static 'js/bootstrap.min.js' %}"></script>
-    <script type="text/javascript" src="{% static 'js/underscore-min.js' %}"></script>
-    <script type="text/javascript" src="{% static 'js/bootstrap-datepicker.js' %}"></script>
-    <script type="text/javascript" src="{% static 'js/backbone-min.js' %}"></script>
-    {% comment %}
-    <script type="text/javascript" src="{% static 'js/checkout.js' %}"></script>
-    <script type="text/javascript" src="{% static 'js/parse-1.3.3.min.js' %}"></script>
-    {% endcomment %}
-
-    <script src="https://checkout.stripe.com/checkout.js"></script>
-    <script type="text/javascript" src="//www.parsecdn.com/js/parse-1.3.3.min.js"></script>
-
-    <script type="text/javascript">
-    Parse.initialize("{{ parse_app_id }}", "{{ parse_key }}");
-    </script>
-
-    <script>
-    $(document).ready(function(){
-
-        var facebookOptions = {
-            appId      : '{{ facebook_app_id }}',
-            xfbml      : true,
-            version    : 'v2.1'
-        }
-
-        window.fbAsyncInit = function() {
-            FB.init(facebookOptions);
-            // called when page loads
-            var callback = function(response){
-            };
-            FB.getLoginStatus(callback);
-            Parse.FacebookUtils.init(facebookOptions);
-            var indexRouter = new IndexRouter();
-            Backbone.history.start();
-            indexRouter.updateLoginState();
-        };
-
-        (function(d, s, id){
-            var js, fjs = d.getElementsByTagName(s)[0];
-            if (d.getElementById(id)) {return;}
-            js = d.createElement(s); js.id = id;
-            js.src = "{% static 'js/facebook_sdk.js' %}";
-            fjs.parentNode.insertBefore(js, fjs);
-        }(document, 'script', 'facebook-jssdk'));
-    });
-    </script>
-
-    <script>
-    (function(d, t) {
-        var g = d.createElement(t),
-            s = d.getElementsByTagName(t)[0];
-        g.src = '//assets.gfycat.com/js/gfyajax-0.517d.js';
-        s.parentNode.insertBefore(g, s);
-    }(document, 'script'));
-    </script>
-
-    <script type="text/javascript" src="{% static 'js/index_router.js' %}"></script>
-    {% include "google_analytics.html" %}
-<!-- End Document
-================================================== -->
 </body>
 </html>

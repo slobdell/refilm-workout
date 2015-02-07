@@ -1,0 +1,108 @@
+import datetime
+from collections import defaultdict
+
+# from django.core.exceptions import ObjectDoesNotExist
+from django.db import models
+from refilm_workout.utils import read_file_as_json
+
+
+EXPIRE_MINUTES = 2 * 31 * 24 * 60 * 60
+
+
+class FilmState(object):
+    NEEDS_REFILM = 1
+    REFILMED = 2
+    IN_PROGRESS = 3
+    WILL_NOT_FILM = 4
+
+
+class _Film(models.Model):
+    film_state_id = models.IntegerField(default=FilmState.NEEDS_REFILM)
+    datetime_status_changed = models.DateTimeField(null=True)
+    datetime_complete = models.DateTimeField(null=True)
+    exercise_id = models.IntegerField()
+
+
+class Film(object):
+
+    class _Exercise(object):
+
+        def __init__(self, dict_obj):
+            self.json_fields = []
+            for key, value in dict_obj.items():
+                self.json_fields.append(key)
+                setattr(self, key, value)
+
+        def to_json(self):
+            json_blob = {}
+            for field in self.json_fields:
+                json_blob[field] = getattr(self, field)
+            return json_blob
+
+        def __hash__(self):
+            return self.id
+
+    _exercises = [_Exercise(dict_obj) for dict_obj in read_file_as_json("refilm_workout/exercises.json")]
+
+    _exercises_by_required_equipment = defaultdict(list)
+    for e in _exercises:
+        required_equipment_key = tuple(sorted(e.equipment_ids))
+        _exercises_by_required_equipment[required_equipment_key].append(e)
+
+    @classmethod
+    def mark_will_not_film(cls, exercise_id):
+        _film = _Film.objects.get(exercise_id=exercise_id)
+        _film.film_state_id = FilmState.WILL_NOT_FILM
+        _film.datetime_status_changed = datetime.datetime.utcnow()
+        _film.save()
+
+    @classmethod
+    def mark_in_progress(cls, exercise_id):
+        _film = _Film.objects.get(exercise_id=exercise_id)
+        _film.film_state_id = FilmState.IN_PROGRESS
+        _film.datetime_status_changed = datetime.datetime.utcnow()
+        _film.save()
+
+    @classmethod
+    def mark_filmed(cls, exercise_id):
+        _film = _Film.objects.get(exercise_id=exercise_id)
+        _film.film_state_id = FilmState.REFILMED
+        _film.datetime_status_changed = datetime.datetime.utcnow()
+        _film.datetime_complete = datetime.datetime.utcnow()
+        _film.save()
+
+    @classmethod
+    def populate_initial_data(cls):
+        existing_exercise_ids = set(_Film.objects.all().values_list("exercise_id", flat=True))
+        for _exercise in cls._exercises:
+            if _exercise.id not in existing_exercise_ids:
+                _Film.objects.create(
+                    film_state_id=FilmState.NEEDS_REFILM,
+                    exercise_id=_exercise.id
+                )
+
+    @classmethod
+    def _readd_stuck_exercises_to_pool(cls):
+        (_Film.objects.filter(
+            film_state_id=FilmState.IN_PROGRESS,
+            datetime_status_changed__lt=datetime.datetime.utcnow() - datetime.timedelta(minutes=EXPIRE_MINUTES)).
+            update(film_state_id=FilmState.NEEDS_REFILM))
+
+    @classmethod
+    def get_next_exercise(cls):
+        cls._readd_stuck_exercises_to_pool()
+        exercise = cls._get_first_available_exercise()
+        _film = _Film.objects.get(exercise_id=exercise.id)
+        _film.film_state_id = FilmState.IN_PROGRESS
+        _film.datetime_status_changed = datetime.datetime.utcnow()
+        _film.save()
+        return exercise
+
+    @classmethod
+    def _get_first_available_exercise(cls):
+        exercise_ids_need_refilming = set(_Film.objects.filter(film_state_id=FilmState.NEEDS_REFILM).values_list("exercise_id", flat=True))
+        for equipment_tuple, exercise_list in cls._exercises_by_required_equipment.iteritems():
+            for exercise in exercise_list:
+                if exercise.id in exercise_ids_need_refilming:
+                    return exercise
+        raise ValueError("HEY ALRIGHT YOU ARE ALL DONE!")

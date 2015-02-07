@@ -1,5 +1,5 @@
 """
-Django settings for workout_generator project.
+Django settings for refilm project.
 
 For more information on this file, see
 https://docs.djangoproject.com/en/1.6/topics/settings/
@@ -32,7 +32,6 @@ if os.environ.get("I_AM_IN_DEV_ENV"):
 
 ALLOWED_HOSTS = [
     ".herokuapp.com",
-    ".workoutgenerator.net",
 ]
 
 INSTALLED_APPS = (
@@ -42,10 +41,8 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'workout_generator.access_token',
-    'workout_generator.workout',
-    'workout_generator.coupon',
-    'workout_generator.user'
+    'refilm_workout.film',
+    # 'workout_generator.access_token',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -58,9 +55,9 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
 
-ROOT_URLCONF = 'workout_generator.urls'
+ROOT_URLCONF = 'refilm_workout.urls'
 
-WSGI_APPLICATION = 'workout_generator.wsgi.application'
+WSGI_APPLICATION = 'refilm_workout.wsgi.application'
 
 '''
 Re add these modules if we want this back:
@@ -132,12 +129,6 @@ else:
     DEFAULT_FILE_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
     STATIC_URL = "http://s3.amazonaws.com/%s/" % AWS_STORAGE_BUCKET_NAME
 
-if os.environ.get("I_AM_IN_DEV_ENV"):
-    BROKER_URL = 'amqp://guest:guest@localhost//'
-else:
-    BROKER_URL = os.environ["CLOUDAMQP_URL"]
-
-
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
@@ -146,18 +137,7 @@ ADMIN_EMAILS = (
     'scott.lobdell@gmail.com',
 )
 
-FACEBOOK_APP_ID = '368683549980586'
-if os.environ.get("I_AM_IN_DEV_ENV"):
-    PARSE_APP_ID = "Rkl6VrGY0wbIxyej5hpNnTxrtB17s2ffakuk3ysP"
-    PARSE_KEY = "zC2FE1eDo02qDpYdIKS1jVoBB4UQOCOKYuGAveM0"
-else:
-    PARSE_APP_ID = "wa1yrXUI5ou6tlxvuXdnYziOOoVO8NjUM7D9onoD"
-    PARSE_KEY = "HyFYNFSqehC9d4PWwDy57KWfZNah94noW2sOd1dm"
-
-
 if os.environ.get("I_AM_IN_DEV_ENV"):
     HOST_URL = "http://localhost:5000"
 else:
     HOST_URL = "http://www.workoutgenerator.net"
-
-MIXPANEL_TOKEN = os.environ['MIXPANEL_TOKEN']
