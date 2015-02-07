@@ -31,10 +31,14 @@ def home(request):
         exercise = Film.get_next_exercise()
     except ValueError:
         return HttpResponse("<h1>YOU'RE ALL DONE!  THANKS!</h1>")
+    finished_count = Film.get_finished_count()
+    total_count = Film.get_total_count()
     render_data = {
         "dev": True if os.environ.get("I_AM_IN_DEV_ENV") else False,
         "video_id": exercise.video_id,
         "exercise_name": exercise.name,
+        "finished_count": finished_count,
+        "total_count": total_count,
         "exercise_id": exercise.id
     }
     return render_to_response("basic_navigation/base.html", render_data)

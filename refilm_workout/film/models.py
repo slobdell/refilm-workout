@@ -106,3 +106,11 @@ class Film(object):
                 if exercise.id in exercise_ids_need_refilming:
                     return exercise
         raise ValueError("HEY ALRIGHT YOU ARE ALL DONE!")
+
+    @classmethod
+    def get_total_count(cls):
+        return _Film.objects.all().count()
+
+    @classmethod
+    def get_finished_count(cls):
+        return _Film.objects.all().exclude(film_state_id=FilmState.NEEDS_REFILM).count()
