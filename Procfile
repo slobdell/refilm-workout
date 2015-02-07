@@ -1,1 +1,1 @@
-web: gunicorn workout_generator.wsgi --log-file -;
+web: gunicorn refilm_workout.wsgi --log-file -;
