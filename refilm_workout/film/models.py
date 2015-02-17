@@ -6,7 +6,7 @@ from django.db import models
 from refilm_workout.utils import read_file_as_json
 
 
-EXPIRE_MINUTES = 2 * 31 * 24 * 60 * 60
+EXPIRE_MINUTES = 30  # 2 * 31 * 24 * 60 * 60
 
 
 class FilmState(object):
