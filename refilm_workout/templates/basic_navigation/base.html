@@ -51,5 +51,12 @@
 <li>Get a full view of the exercise</li>
 <li><strong>Some</strong> current exercise videos are straight up <strong>wrong</strong></li>
 </ul>
+{% for combo_id, name in possible_equipments.items %}
+<a style="font-size: 1.2em;" href="/{{ combo_id }}">
+{{ name }}
+</a>
+<br/>
+{% endfor %}
 </body>
 </html>
+

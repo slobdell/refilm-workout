@@ -89,9 +89,12 @@ class Film(object):
             update(film_state_id=FilmState.NEEDS_REFILM))
 
     @classmethod
-    def get_next_exercise(cls):
+    def get_next_exercise(cls, combo_id_str):
+        id_tuple = None
+        if combo_id_str is not None:
+            id_tuple = tuple([int(i) for i in combo_id_str.split("_")])
         cls._readd_stuck_exercises_to_pool()
-        exercise = cls._get_first_available_exercise()
+        exercise = cls._get_first_available_exercise(id_tuple)
         _film = _Film.objects.get(exercise_id=exercise.id)
         _film.film_state_id = FilmState.IN_PROGRESS
         _film.datetime_status_changed = datetime.datetime.utcnow()
@@ -99,13 +102,23 @@ class Film(object):
         return exercise
 
     @classmethod
-    def _get_first_available_exercise(cls):
+    def _get_first_available_exercise(cls, equipment_id_tuple):
         exercise_ids_need_refilming = set(_Film.objects.filter(film_state_id=FilmState.NEEDS_REFILM).values_list("exercise_id", flat=True))
-        for equipment_tuple, exercise_list in cls._exercises_by_required_equipment.iteritems():
+        if equipment_id_tuple is not None:
+            exercise_list = cls._exercises_by_required_equipment[equipment_id_tuple]
             for exercise in exercise_list:
                 if exercise.id in exercise_ids_need_refilming:
                     return exercise
+        else:
+            for equipment_tuple, exercise_list in cls._exercises_by_required_equipment.iteritems():
+                for exercise in exercise_list:
+                    if exercise.id in exercise_ids_need_refilming:
+                        return exercise
         raise ValueError("HEY ALRIGHT YOU ARE ALL DONE!")
+
+    @classmethod
+    def get_all_equipment_tuples(cls):
+        return cls._exercises_by_required_equipment.keys()
 
     @classmethod
     def get_total_count(cls):
