@@ -2,10 +2,16 @@
 <head></head>
 <body>
 {% for exercise in exercises %}
+<div style="display: block; overflow: hidden;">
+<span style="display: inline-block; position: relative; float: left; width: 40%;">
 <a href="/exercise/{{ exercise.id }}/" style="font-size: 1.3em; margin-top: 10px;">
 {{ exercise.name }}
 </a>
-<br/>
+</span>
+<span style="display: inline-block; position: relative; float: left; width: 40%;">
+({{ exercise.equipment_str }})
+</span>
+</div>
 {% endfor %}
 </body>
 </html>

@@ -4,6 +4,7 @@ from collections import defaultdict
 # from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 from refilm_workout.utils import read_file_as_json
+from refilm_workout.constants import Equipment
 
 
 EXPIRE_MINUTES = 30  # 2 * 31 * 24 * 60 * 60
@@ -32,6 +33,10 @@ class Film(object):
             for key, value in dict_obj.items():
                 self.json_fields.append(key)
                 setattr(self, key, value)
+
+        @property
+        def equipment_str(self):
+            return ", ".join([Equipment.get_name_for_id(id) for id in self.equipment_ids])
 
         def to_json(self):
             json_blob = {}
