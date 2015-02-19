@@ -129,7 +129,14 @@ class Film(object):
 
     @classmethod
     def get_all_equipment_tuples(cls):
-        return cls._exercises_by_required_equipment.keys()
+        equipment_tuples = []
+        exercise_ids_need_refilming = set(_Film.objects.filter(film_state_id=FilmState.NEEDS_REFILM).values_list("exercise_id", flat=True))
+        for equipment_tuple, exercise_list in cls._exercises_by_required_equipment.items():
+            for exercise in exercise_list:
+                if exercise.id in exercise_ids_need_refilming:
+                    equipment_tuples.append(equipment_tuple)
+                    break
+        return equipment_tuples
 
     @classmethod
     def get_total_count(cls):
