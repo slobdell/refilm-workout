@@ -11,10 +11,8 @@
   ================================================== -->
 </head>
 <body>
-<a href="/remaining">View All Remaining</a>
     <div>
     <h1>{{ exercise_name }}</h1>
-{{ finished_count }} / {{ total_count }}
 <br/>
 
 <video id="video_exercise_{{ exercise_id }}" muted autoplay="" loop="" poster="true" width="480" height="360">
@@ -41,26 +39,6 @@
     </form>
 	<!-- Javascript/jQuery
 	================================================== -->
-<h2>General Guidance</h2>
-<ul>
-<li>Re-Filmed video should be BETTER quality than current video</li>
-<li>Film from a head on angle then from a side angle</li>
-<li>Each video should be about 15 seconds or less</li>
-<li>3 reps from front, 3 reps from side</li>
-<li>Ensure lighting conditions are good (windows should be behind the camera)</li>
-<li>Emphasize proper/strict form</li>
-<li>Get a full view of the exercise</li>
-<li><strong>Some</strong> current exercise videos are straight up <strong>wrong</strong></li>
-</ul>
-<a style="font-size: 1.2em;" href="/bodyweight">
-BodyWeight
-</a><br/>
-{% for combo_id, name in possible_equipments.items %}
-<a style="font-size: 1.2em;" href="/{{ combo_id }}">
-{{ name }}
-</a>
-<br/>
-{% endfor %}
 </body>
 </html>
 

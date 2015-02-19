@@ -4,7 +4,7 @@ import os
 
 # from django.conf import settings
 from django.http import HttpResponse
-# from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect
 # from django.http import HttpResponsePermanentRedirect
 from django.shortcuts import render_to_response
 
@@ -60,3 +60,34 @@ def _get_equipments():
         display_name = ", ".join([Equipment.get_name_for_id(id) for id in tuple_obj])
         combo_to_name[combo_id] = display_name
     return combo_to_name
+
+
+def remaining(request):
+    exercises = Film.get_all_available()
+    render_data = {
+        "exercises": exercises
+    }
+    return render_to_response("basic_navigation/all.html", render_data)
+
+
+def exercise(request, exercise_id):
+    if request.method == "POST":
+        action = request.POST['action']
+        action_map = {
+            'discard': Film.mark_will_not_film,
+            'later': Film.mark_in_progress,
+            'filmed': Film.mark_filmed,
+        }
+        fn = action_map[action]
+        exercise_id = int(request.POST['exercise_id'])
+        fn(exercise_id)
+        return HttpResponseRedirect("/")
+
+    exercise_id = int(exercise_id)
+    exercise = Film.get_by_exercise_id(exercise_id)
+    render_data = {
+        "video_id": exercise.video_id,
+        "exercise_name": exercise.name,
+        "exercise_id": exercise.id
+    }
+    return render_to_response("basic_navigation/exercise.html", render_data)

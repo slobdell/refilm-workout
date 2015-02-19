@@ -1,0 +1,11 @@
+<html>
+<head></head>
+<body>
+{% for exercise in exercises %}
+<a href="/exercise/{{ exercise.id }}/" style="font-size: 1.3em; margin-top: 10px;">
+{{ exercise.name }}
+</a>
+<br/>
+{% endfor %}
+</body>
+</html>

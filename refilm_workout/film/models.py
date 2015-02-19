@@ -45,9 +45,11 @@ class Film(object):
     _exercises = [_Exercise(dict_obj) for dict_obj in read_file_as_json("refilm_workout/exercises.json")]
 
     _exercises_by_required_equipment = defaultdict(list)
+    _exercise_by_id = {}
     for e in _exercises:
         required_equipment_key = tuple(sorted(e.equipment_ids))
         _exercises_by_required_equipment[required_equipment_key].append(e)
+        _exercise_by_id[e.id] = e
 
     @classmethod
     def mark_will_not_film(cls, exercise_id):
@@ -111,6 +113,26 @@ class Film(object):
         _film.datetime_status_changed = datetime.datetime.utcnow()
         _film.save()
         return exercise
+
+    @classmethod
+    def get_by_exercise_id(cls, exercise_id):
+        cls._readd_stuck_exercises_to_pool()
+        exercise = cls._exercise_by_id[exercise_id]
+        _film = _Film.objects.get(exercise_id=exercise.id)
+        _film.film_state_id = FilmState.IN_PROGRESS
+        _film.datetime_status_changed = datetime.datetime.utcnow()
+        _film.save()
+        return exercise
+
+    @classmethod
+    def get_all_available(cls):
+        exercise_ids_need_refilming = set(_Film.objects.filter(film_state_id=FilmState.NEEDS_REFILM).values_list("exercise_id", flat=True))
+        grouped_exercises = []
+        for exercise_list in cls._exercises_by_required_equipment.values():
+            for exercise in exercise_list:
+                if exercise.id in exercise_ids_need_refilming:
+                    grouped_exercises.append(exercise)
+        return grouped_exercises
 
     @classmethod
     def _get_first_available_exercise(cls, equipment_id_tuple):
