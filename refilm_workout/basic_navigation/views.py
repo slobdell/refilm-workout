@@ -28,10 +28,16 @@ def home(request, combo_id=None):
         exercise_id = int(request.POST['exercise_id'])
         fn(exercise_id)
 
-    try:
-        exercise = Film.get_next_exercise(combo_id)
-    except ValueError:
-        return HttpResponse("<h1>YOU'RE ALL DONE!  THANKS!</h1>")
+    if combo_id == "bodyweight":
+        try:
+            exercise = Film.get_next_bodyweight_exercise()
+        except ValueError:
+            return HttpResponse("<h1>YOU'RE ALL DONE!  THANKS!</h1>")
+    else:
+        try:
+            exercise = Film.get_next_exercise(combo_id)
+        except ValueError:
+            return HttpResponse("<h1>YOU'RE ALL DONE!  THANKS!</h1>")
     finished_count = Film.get_finished_count()
     total_count = Film.get_total_count()
     render_data = {

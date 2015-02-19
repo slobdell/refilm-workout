@@ -102,6 +102,17 @@ class Film(object):
         return exercise
 
     @classmethod
+    def get_next_bodyweight_exercise(cls):
+        id_tuple = tuple()
+        cls._readd_stuck_exercises_to_pool()
+        exercise = cls._get_first_available_exercise(id_tuple)
+        _film = _Film.objects.get(exercise_id=exercise.id)
+        _film.film_state_id = FilmState.IN_PROGRESS
+        _film.datetime_status_changed = datetime.datetime.utcnow()
+        _film.save()
+        return exercise
+
+    @classmethod
     def _get_first_available_exercise(cls, equipment_id_tuple):
         exercise_ids_need_refilming = set(_Film.objects.filter(film_state_id=FilmState.NEEDS_REFILM).values_list("exercise_id", flat=True))
         if equipment_id_tuple is not None:
